@@ -5,21 +5,33 @@ import (
   "math"
   "sensuatc/sensuutil"
 
+  "github.com/spf13/cobra"
   "github.com/mackerelio/go-osstat/memory"
 )
 
+// Argument variables and Cobra rootCmd
+//
 var (
+  cmd *cobra.Command
   threshWarn uint64
   threshCrit uint64
 )
 
+// Initialize CLI arguments
 func init() {
-  cmd := sensuutil.Cmd("check-memory")
+  cmd = sensuutil.Cmd("check-memory", check)
   cmd.Flags().Uint64VarP(&threshWarn, "warning", "w", 80, "Warning level threshold")
-  cmd.Flags().Uint64VarP(&threshCrit, "critical", "s", 90, "Critical level threshold")
+  cmd.Flags().Uint64VarP(&threshCrit, "critical", "c", 90, "Critical level threshold")
 }
 
+// Execute the check
 func main() {
+	cmd.Execute()
+}
+
+// Check function
+//
+func check(c *cobra.Command, args []string) {
   m, err := memory.Get()
   if err != nil {
     sensuutil.Exit("runtimeerror", err)

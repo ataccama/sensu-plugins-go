@@ -53,8 +53,9 @@ func Exit(args ...interface{}) {
 
 // Cmd wrapper for initializing common sensu check plugin
 //
-func Cmd(name string) *cobra.Command {
+func Cmd(name string, f func(c *cobra.Command, args []string)) *cobra.Command {
   return &cobra.Command{
     Use: name,
+		Run: f,
   }
 }
