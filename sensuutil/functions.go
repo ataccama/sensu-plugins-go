@@ -51,6 +51,8 @@ func Exit(args ...interface{}) {
 	os.Exit(exitCode)
 }
 
+// Cmd wrapper for initializing common sensu check plugin
+//
 func Cmd(name string) *cobra.Command {
   return &cobra.Command{
     Use: name,

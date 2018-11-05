@@ -9,14 +9,14 @@ import (
 )
 
 var (
-  ThreshWarn uint64
-  ThreshCrit uint64
+  threshWarn uint64
+  threshCrit uint64
 )
 
 func init() {
   cmd := sensuutil.Cmd("check-memory")
-  cmd.Flags().Uint64VarP(&ThreshWarn, "warning", "w", 80, "Warning level threshold")
-  cmd.Flags().Uint64VarP(&ThreshCrit, "critical", "s", 90, "Critical level threshold")
+  cmd.Flags().Uint64VarP(&threshWarn, "warning", "w", 80, "Warning level threshold")
+  cmd.Flags().Uint64VarP(&threshCrit, "critical", "s", 90, "Critical level threshold")
 }
 
 func main() {
@@ -31,9 +31,9 @@ func main() {
   pctCached := cached*float64(100)/float64(m.Total)
   message := fmt.Sprintf("%.2f%% (%.2fGB) memory used\n%.2f%% (%.2fGB) used by cache", pctUsed, used/math.Pow(1024,3), pctCached, cached/math.Pow(1024,3))
 
-  if pctUsed >= float64(ThreshCrit) {
+  if pctUsed >= float64(threshCrit) {
     sensuutil.Exit("CRITICAL", message)
-  } else if pctUsed >= float64(ThreshWarn) {
+  } else if pctUsed >= float64(threshWarn) {
     sensuutil.Exit("WARNING", message)
   } else {
     sensuutil.Exit("OK", message)
