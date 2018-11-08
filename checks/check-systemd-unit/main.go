@@ -40,7 +40,7 @@ func check(c *cobra.Command, args []string) {
 // Wrapper for SystemD services
 //
 func checkSystemdService(name string) (string, string) {
-	systemd, err := sd.NewSystemConnection()
+	systemd, err := sd.NewSystemdConnection()
 	if err != nil {
 		return "RUNTIMEERROR", fmt.Sprint(err)
 	}
