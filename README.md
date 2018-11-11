@@ -2,7 +2,7 @@
 
 > Buildable assets for Sensu 5.0
 
-Sensu [[ https://docs.sensu.io/sensu-core/2.0/reference/assets/ | asset ]] is a self-contained executable that Sensu is able to distribute to the agents who need it and then use it in checks, handlers etc. Old Ruby-based Sensu checks can't be used, because they require Ruby and shitload of gems to work properly.
+Sensu [asset](https://docs.sensu.io/sensu-go/5.0/reference/assets/) is a self-contained executable that Sensu is able to distribute to the agents who need it and then use it in checks, handlers etc. Old Ruby-based Sensu checks can't be used, because they require Ruby and shitload of gems to work properly.
 
 The preferred way to implement checks now is to use Golang, because it fullfills all the requirements from the previous paragraph.
 
@@ -14,19 +14,19 @@ The preferred way to implement checks now is to use Golang, because it fullfills
 - [x] generic SystemD unit check - `check-systemd-unit`
 - [x] TCP check - `check-tcp`
 - [x] Kernel process (aka `ps ...`) - `check-ps`
-- [] S.M.A.R.T. - `check-smart` //started//
-- [] mdamd consistency check - `check-mdraid`
-- [x] HTTP check - `check-http` //just return codes so far//
-- [] ICMP check - `check-icmp`
-- [] Prometheus metric - `check-promql`
-- [] Docker container status - `check-docker-process`
-- [] Nomad
+- [ ] S.M.A.R.T. - `check-smart` _started_
+- [ ] mdamd consistency check - `check-mdraid`
+- [x] HTTP check - `check-http` _just return codes so far_
+- [ ] ICMP check - `check-icmp`
+- [ ] Prometheus metric - `check-promql`
+- [ ] Docker container status - `check-docker-process`
+- [ ] Nomad
   - `check-nomad-task`
   - `check-nomad-job`
 
 ## Handlers
 
-- [] [[ https://github.com/sensu/sensu-slack-handler/blob/master/main.go | Slack ]]
+- [ ] [Slack](https://github.com/sensu/sensu-slack-handler/)
 
 # Building
 
@@ -38,6 +38,6 @@ The preferred way to implement checks now is to use Golang, because it fullfills
 
 # Notes
 
-- Sensu guys have made [[ https://github.com/sensu-plugins/sensu-plugins-go/ | some libs ]] to help with commonalities, those are included
-- A guy who's name sounds like a random japanese Samurai already created [[ https://github.com/hico-horiuchi/sensu-plugins-go/ | some checks of his ]], maybe some of the code might be reused
+- Sensu guys have made [some libs](https://github.com/sensu-plugins/sensu-plugins-go/) to help with commonalities, those are included
+- A guy who's name sounds like a random japanese Samurai already created [some checks of his](https://github.com/hico-horiuchi/sensu-plugins-go/) - it might be worth exploring
 
