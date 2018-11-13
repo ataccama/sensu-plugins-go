@@ -47,7 +47,7 @@ func check(c *cobra.Command, args []string) {
 	for _, p := range ps {
 		n, err := p.Cmdline()
 		if err != nil {
-			sensuutil.Exit("RUNTIMEERROR", "Can't get cmdline of a process")
+			continue
 		}
 
 		if ok, _ := regexp.MatchString(filter, n); ok {
