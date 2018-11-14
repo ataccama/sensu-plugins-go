@@ -12,6 +12,7 @@ The preferred way to implement checks now is to use Golang, because it fullfills
 - [x] Memory - `check-memory`
 - [x] Filesystem usage `check-fs`
 - [x] generic SystemD unit check - `check-systemd-unit`
+  - note that it requires `root` privileges to run, hence [#2315](https://github.com/sensu/sensu-go/issues/2315) has to be closed first
 - [x] TCP check - `check-tcp`
 - [x] Kernel process (aka `ps ...`) - `check-ps`
 - [ ] S.M.A.R.T. - `check-smart` _started_
@@ -39,5 +40,5 @@ The preferred way to implement checks now is to use Golang, because it fullfills
 # Notes
 
 - Sensu guys have made [some libs](https://github.com/sensu-plugins/sensu-plugins-go/) to help with commonalities, those are included
-- A guy who's name sounds like a random japanese Samurai already created [some checks of his](https://github.com/hico-horiuchi/sensu-plugins-go/) - it might be worth exploring
+- There's a [repo](https://github.com/hico-horiuchi/sensu-plugins-go/) with some old Golang plugins written for Sensu 1.x - it might be worth exploring
 
