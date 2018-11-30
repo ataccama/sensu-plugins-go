@@ -21,9 +21,7 @@ The preferred way to implement checks now is to use Golang, because it fullfills
 - [ ] ICMP check - `check-icmp`
 - [ ] Prometheus metric - `check-promql`
 - [ ] Docker container status - `check-docker-process`
-- [ ] Nomad
-  - `check-nomad-task`
-  - `check-nomad-job`
+- [x] Consul/Nomad -`check-consul-service`
 
 ## Handlers
 
