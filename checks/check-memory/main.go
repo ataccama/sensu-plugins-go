@@ -37,11 +37,11 @@ func check(c *cobra.Command, args []string) {
 		sensuutil.Exit("runtimeerror", err)
 	}
 
-	used := float64(m.Total - m.Free - m.Cached)
-	cached := float64(m.Cached)
+	used := float64(m.Total - m.Available)
+	cached := float64(m.Cached + m.Buffers)
 	pctUsed := float64(used*100) / float64(m.Total)
 	pctCached := cached * float64(100) / float64(m.Total)
-	message := fmt.Sprintf("%.2f%% (%.2fGB) memory used\n%.2f%% (%.2fGB) used by cache", pctUsed, used/math.Pow(1024, 3), pctCached, cached/math.Pow(1024, 3))
+	message := fmt.Sprintf("%.2f%% (%.2fGB) memory used\n%.2f%% (%.2fGB) used by buffers/cache", pctUsed, used/math.Pow(1024, 3), pctCached, cached/math.Pow(1024, 3))
 
 	if pctUsed >= float64(threshCrit) {
 		sensuutil.Exit("CRITICAL", message)
