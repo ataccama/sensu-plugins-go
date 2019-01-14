@@ -14,4 +14,5 @@ bin:
 
 package: sensu-atc-assets-$(VERSION).tar.gz
 sensu-atc-assets-$(VERSION).tar.gz: bin checks
-	tar czvf $@ bin/
+	sudo setcap 'cap_setuid,cap_setgid=eip' bin/check-systemd-unit
+	tar --xattrs --xattrs-include='*' -czvf $@ bin/

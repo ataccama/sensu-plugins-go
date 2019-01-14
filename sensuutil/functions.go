@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
 // Exit method for all sensu checks that will print the output and desired exit code
@@ -54,8 +54,8 @@ func Exit(args ...interface{}) {
 // Cmd wrapper for initializing common sensu check plugin
 //
 func Cmd(name string, f func(c *cobra.Command, args []string)) *cobra.Command {
-  return &cobra.Command{
-    Use: name,
+	return &cobra.Command{
+		Use: name,
 		Run: f,
-  }
+	}
 }

@@ -16,7 +16,7 @@ import (
 //
 var (
 	cmd      *cobra.Command
-	service  string
+	service  []string
 	hostname string
 	address  string
 )
@@ -29,7 +29,7 @@ func init() {
 	}
 
 	cmd = sensuutil.Cmd("check-consul-service", check)
-	cmd.Flags().StringVarP(&service, "service", "s", "", "Name of the service")
+	cmd.Flags().StringSliceVarP(&service, "service", "s", []string{}, "Name of the service (can be repeated)")
 	cmd.Flags().StringVarP(&hostname, "hostname", "H", hostnameAuto, "Hostname of the cluster member where to run the check")
 	cmd.Flags().StringVarP(&address, "address", "a", "127.0.0.1:8500", "Address of the API endpoint")
 }
@@ -42,7 +42,7 @@ func main() {
 // Check function
 //
 func check(c *cobra.Command, args []string) {
-  // Consul connection setup
+	// Consul connection setup
 	cc := &api.Config{
 		Address: address,
 		Scheme:  "http",
@@ -53,12 +53,11 @@ func check(c *cobra.Command, args []string) {
 	}
 
 	// Query health of services
-	var states map[string][]string
-	states = make(map[string][]string)
+	states := make(map[string][]string)
 
 	checks, _, err := client.Health().Node(hostname, nil)
 	if err != nil {
-		sensuutil.Exit("CRITICAL", "Can't connect to the Consul API endpoint")
+		sensuutil.Exit("CRITICAL", "Can't get health of services")
 	}
 
 	for _, c := range checks {
@@ -66,11 +65,21 @@ func check(c *cobra.Command, args []string) {
 		if name == "" {
 			name = c.Name
 		}
-		states[c.Status] = append(states[c.Status], name)
+
+		if len(service) > 0 {
+			for _, s := range service {
+				if s == name {
+					states[c.Status] = append(states[c.Status], name)
+				}
+			}
+		} else {
+			states[c.Status] = append(states[c.Status], name)
+		}
 	}
 
 	// Decide the state
-	var exitState, exitMsg string
+	var exitState string
+	var exitMsg []string
 	if len(states["critical"]) > 0 {
 		exitState = "CRITICAL"
 	} else if len(states["warning"]) > 0 {
@@ -82,9 +91,9 @@ func check(c *cobra.Command, args []string) {
 	// Format message
 	for st, sv := range states {
 		sort.Strings(sv)
-		exitMsg += fmt.Sprintf("%s: %s\n", strings.ToUpper(st), strings.Join(sv, ", "))
+		exitMsg = append(exitMsg, fmt.Sprintf("%s: %s", strings.ToUpper(st), strings.Join(sv, ", ")))
 	}
 
 	// Return the result
-	sensuutil.Exit(exitState, exitMsg)
+	sensuutil.Exit(exitState, strings.Join(exitMsg, "\n"))
 }

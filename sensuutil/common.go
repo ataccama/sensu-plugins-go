@@ -15,3 +15,4 @@ var MonitoringErrorCodes = map[string]int{
 	"WARNING":  1, // this kinda sucks but don't get out of bed to deal with it
 	"OK":       0, // “We’re still flying”
 }
+
