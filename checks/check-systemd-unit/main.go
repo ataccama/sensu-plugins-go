@@ -34,39 +34,50 @@ func check(c *cobra.Command, args []string) {
 	if unitName == "" {
 		sensuutil.Exit("CONFIGERROR", "Unit name is mandatory (-u)")
 	}
-	sensuutil.Exit(checkSystemdService(unitName))
+
+	_unitName, unitState, unitSubState, err := getSystemdService(unitName)
+	if err != nil {
+		sensuutil.Exit("UNKNOWN", err.Error())
+	}
+
+	if _unitName == "" {
+		sensuutil.Exit("UNKNOWN", fmt.Sprintf("Unit %s not found", unitName))
+	}
+
+	var outputState string
+	switch unitState {
+	case "active":
+		outputState = "OK"
+	case "activating":
+		outputState = "WARNING"
+	case "failed":
+		outputState = "CRITICAL"
+	default:
+		outputState = "UNKNOWN"
+	}
+
+	sensuutil.Exit(outputState, fmt.Sprintf("%s is %s (%s)", _unitName, unitState, unitSubState))
 }
 
 // Wrapper for SystemD services
 //
-func checkSystemdService(name string) (string, string) {
-	systemd, err := sd.NewSystemdConnection()
+func getSystemdService(name string) (string, string, string, error) {
+	systemd, err := sd.NewSystemConnection()
 	if err != nil {
-		return "RUNTIMEERROR", fmt.Sprint(err)
+		return "", "", "", err
 	}
 	defer systemd.Close()
 
-	units, err := systemd.ListUnitsByNames([]string{name})
+	units, err := systemd.ListUnits()
 	if err != nil {
-		return "RUNTIMEERROR", fmt.Sprint(err)
+		return "", "", "", err
 	}
 
-	if len(units) > 1 {
-		return "CONFIGERROR", "multiple units match - refine your filter"
-	} else if len(units) == 0 {
-		return "RUNTIMEERROR", "no such unit"
+	for _, u := range units {
+		if name == u.Name {
+			return u.Name, u.ActiveState, u.SubState, nil
+		}
 	}
 
-	message := fmt.Sprintf("%s is %s", units[0].Name, units[0].SubState)
-
-	switch units[0].ActiveState {
-	case "active":
-		return "OK", message
-	case "activating":
-		return "WARNING", message
-	case "failed":
-		return "CRITICAL", message
-	default:
-		return "UNKNOWN", message
-	}
+	return "", "", "", nil
 }
